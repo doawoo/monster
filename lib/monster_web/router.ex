@@ -7,6 +7,12 @@ defmodule MonsterWeb.Router do
 
   scope "/api", MonsterWeb do
     pipe_through :api
+
+    scope "/auth" do
+      post "/register", AuthController, :register
+      post "/login", AuthController, :login
+      post "/logout", AuthController, :logout
+    end
   end
 
   scope "/", MonsterWeb do

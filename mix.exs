@@ -34,7 +34,9 @@ defmodule Monster.MixProject do
   defp deps do
     [
       {:phoenix, "~> 1.5.6"},
+      {:phx_gen_auth, "0.5.0"},
       {:phoenix_ecto, "~> 4.1"},
+      {:bcrypt_elixir, "~> 2.2.0"},
       {:ecto_sql, "~> 3.4"},
       {:postgrex, ">= 0.0.0"},
       {:phoenix_live_dashboard, "~> 0.3 or ~> 0.2.9"},
