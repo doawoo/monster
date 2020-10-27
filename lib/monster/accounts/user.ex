@@ -16,8 +16,10 @@ defmodule Monster.Accounts.User do
     |> cast(attrs, [:email, :password, :nickname])
     |> validate_required([:email, :password, :nickname])
     |> validate_length(:email, min: 2, max: 255)
+    |> validate_length(:password, min: 8)
     |> validate_length(:nickname, min: 2, max: 255)
     |> validate_format(:email, ~r/@/)
+    |> unique_constraint(:email)
     |> hash_new_user_password()
   end
 
