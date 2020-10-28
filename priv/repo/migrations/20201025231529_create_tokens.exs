@@ -4,7 +4,7 @@ defmodule Monster.Repo.Migrations.CreateTokens do
   def change do
     create table(:tokens) do
       add :expires, :naive_datetime
-      add :token_string, :uuid
+      add :token_string, :text
       add :revoked, :boolean, default: false
       add :user_id, references(:users, on_delete: :nothing)
 

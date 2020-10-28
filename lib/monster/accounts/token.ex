@@ -2,11 +2,13 @@ defmodule Monster.Accounts.Token do
   use Ecto.Schema
   import Ecto.Changeset
 
-  @days_valid 7
+  @days_valid 1
+  @token_length 1024
 
   schema "tokens" do
     field :expires, :naive_datetime
-    field :token_string, Ecto.UUID
+    field :token_string, :string
+    field :revoked, :boolean, default: false
     field :user_id, :id
 
     timestamps()
@@ -23,7 +25,8 @@ defmodule Monster.Accounts.Token do
   end
 
   def generate_token(changeset) do
-    changeset |> put_change(:token_string, Ecto.UUID.generate)
+    token = :crypto.strong_rand_bytes(@token_length) |> Base.encode64 |> binary_part(0, @token_length)
+    changeset |> put_change(:token_string, token)
   end
 
   def set_expiration(changeset) do
