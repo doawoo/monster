@@ -7,6 +7,14 @@ defmodule MonsterWeb.Formatters.Errors do
     }
   end
 
+  @spec server_error(binary) :: %{msg: binary, status: 500}
+  def server_error(message) when is_binary(message) do
+    %{
+      status: 500,
+      msg: message
+    }
+  end
+
   def ecto_errors(errors) when is_list(errors) do
     message = Enum.reduce(errors, "", fn {field, {msg, options}}, acc ->
 

@@ -11,7 +11,6 @@ defmodule MonsterWeb.Router do
     scope "/auth" do
       post "/register", AuthController, :register
       post "/login", AuthController, :login
-      post "/logout", AuthController, :logout
     end
   end
 
