@@ -5,12 +5,21 @@ defmodule MonsterWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :auth_required do
+    plug MonsterWeb.Plugs.TokenAuthPlug
+  end
+
   scope "/api", MonsterWeb do
     pipe_through :api
 
     scope "/auth" do
       post "/register", AuthController, :register
       post "/login", AuthController, :login
+    end
+
+    scope "/revoke_token" do
+      pipe_through :auth_required
+      post "/", AuthController, :revoke_token
     end
   end
 

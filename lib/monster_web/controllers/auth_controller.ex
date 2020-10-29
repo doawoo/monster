@@ -39,4 +39,9 @@ defmodule MonsterWeb.AuthController do
     end
   end
   def login(conn, _), do: conn |> json(Errors.bad_request("Invalid user parameters."))
+
+  @spec revoke_token(Plug.Conn.t(), any) :: Plug.Conn.t()
+  def revoke_token(conn, _) do
+    conn |> put_status(:ok) |> json(%{})
+  end
 end
