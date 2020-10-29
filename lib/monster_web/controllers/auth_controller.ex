@@ -6,6 +6,8 @@ defmodule MonsterWeb.AuthController do
   alias Monster.Accounts.Token
   alias Monster.Accounts
 
+  @token_salt "USER_AUTH_TOKEN"
+  @days_valid 1
 
   def register(conn, %{"user" => %{"email" => _email, "password" => password, "nickname" => _nickname} = params}) do
     with {:ok, _password} <- NotQwerty123.PasswordStrength.strong_password?(password),
@@ -26,13 +28,9 @@ defmodule MonsterWeb.AuthController do
     with %User{} = user <- Accounts.get_user_by_email(email),
     true <- Bcrypt.verify_pass(password, user.password) do
       # create a new token and return it to the user
-      case Accounts.create_token(%{user_id: user.id}) do
-        {:ok, %Token{} = token} -> conn |> put_status(:ok) |> json(%{
-          "token" => token.token_string,
-          "expires" => token.expires,
-        })
-        _ -> conn |> put_status(:internal_server_error) |> json(Errors.server_error("Something went wrong"))
-      end
+      expr = NaiveDateTime.add(NaiveDateTime.utc_now(), 86400 * @days_valid, :second) |> NaiveDateTime.truncate(:second)
+      token = Phoenix.Token.sign(MonsterWeb.Endpoint, @token_salt, %{user_id: user.id, expires: expr})
+      conn |> put_status(:ok) |> json(%{token: token})
     else
       _ -> conn |> put_status(:bad_request) |> json(Errors.bad_request("Could not authenticate"))
     end
