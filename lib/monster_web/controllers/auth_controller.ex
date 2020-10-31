@@ -10,7 +10,7 @@ defmodule MonsterWeb.AuthController do
   @days_valid 1
 
   @spec register(Plug.Conn.t(), any) :: Plug.Conn.t()
-  def register(conn, %{"user" => %{"email" => _email, "password" => password, "nickname" => _nickname} = params}) do
+  def register(%Plug.Conn{} = conn, %{"user" => %{"email" => _email, "password" => password, "nickname" => _nickname} = params}) do
     with {:ok, _password} <- NotQwerty123.PasswordStrength.strong_password?(password),
     {:ok, _new_user} <- Accounts.create_user(params) do
       conn |> put_status(:created) |> json(%{status: 201, message: "user created"})
@@ -23,7 +23,7 @@ defmodule MonsterWeb.AuthController do
         conn |> put_status(:bad_request) |> json(Errors.ecto_errors(errors))
     end
   end
-  def register(conn, _), do: conn |> put_status(:bad_request) |> json(Errors.bad_request("Invalid user parameters."))
+  def register(%Plug.Conn{} = conn, _), do: conn |> put_status(:bad_request) |> json(Errors.bad_request("Invalid user parameters."))
 
   @spec login(Plug.Conn.t(), any) :: Plug.Conn.t()
   def login(conn, %{"user" => %{"email" => email, "password" => password}}) do
@@ -38,10 +38,20 @@ defmodule MonsterWeb.AuthController do
       _ -> conn |> put_status(:bad_request) |> json(Errors.bad_request("Could not authenticate"))
     end
   end
-  def login(conn, _), do: conn |> json(Errors.bad_request("Invalid user parameters."))
+  def login(%Plug.Conn{} = conn, _), do: conn |> json(Errors.bad_request("Invalid user parameters."))
 
   @spec revoke_token(Plug.Conn.t(), any) :: Plug.Conn.t()
-  def revoke_token(conn, _) do
+  def revoke_token(%Plug.Conn{} = conn, _) do
+    token_session = conn.assigns[:token]
+
+    token_string = conn.assigns[:token_string]
+    user_id = token_session.user_id
+
+    Monster.Tokens.create_revoked_token(%{
+      user_id: user_id,
+      token_string: token_string
+    })
+
     conn |> put_status(:ok) |> json(%{})
   end
 end

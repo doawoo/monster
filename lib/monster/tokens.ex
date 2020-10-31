@@ -36,6 +36,7 @@ defmodule Monster.Tokens do
 
   """
   def get_revoked_token!(id), do: Repo.get!(RevokedToken, id)
+  def get_revoked_token_by_string(str), do: Repo.get_by(RevokedToken, token_string: str)
 
   @doc """
   Creates a revoked_token.
