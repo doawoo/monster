@@ -1,8 +1,12 @@
 defmodule MonsterWeb.Router do
   use MonsterWeb, :router
 
+  @ratelimit_max_requests 5
+  @ratelimit_decay_period 1_000
+
   pipeline :api do
     plug :accepts, ["json"]
+    plug Hammer.Plug, rate_limit: {"api:ratelimit", @ratelimit_decay_period, @ratelimit_max_requests}, by: :ip
   end
 
   pipeline :auth_required do
