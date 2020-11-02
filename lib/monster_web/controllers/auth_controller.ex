@@ -19,8 +19,6 @@ defmodule MonsterWeb.AuthController do
         conn |> put_status(:bad_request) |> json(Errors.ecto_errors(errors))
       {:error, message} ->
         conn |> put_status(:bad_request) |> json(Errors.bad_request(message))
-      %Ecto.Changeset{errors: errors} ->
-        conn |> put_status(:bad_request) |> json(Errors.ecto_errors(errors))
     end
   end
   def register(%Plug.Conn{} = conn, _), do: conn |> put_status(:bad_request) |> json(Errors.bad_request("Invalid user parameters."))

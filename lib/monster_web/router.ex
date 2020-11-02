@@ -25,6 +25,18 @@ defmodule MonsterWeb.Router do
       pipe_through :auth_required
       post "/", AuthController, :revoke_token
     end
+
+    scope "/character" do
+      pipe_through :auth_required
+
+      get "/", CharacterController, :index
+      get "/:id", CharacterController, :get
+
+      post "/", CharacterController, :create
+      patch "/:id", CharacterController, :update
+
+      delete "/:id", CharacterController, :delete
+    end
   end
 
   scope "/", MonsterWeb do
