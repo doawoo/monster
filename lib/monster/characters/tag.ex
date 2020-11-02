@@ -13,7 +13,7 @@ defmodule Monster.Characters.Tag do
   @doc false
   def changeset(tag, attrs) do
     tag
-    |> cast(attrs, [:key, :value])
-    |> validate_required([:key, :value])
+    |> cast(attrs, [:key, :value, :character_id])
+    |> validate_required([:key, :value, :character_id])
   end
 end

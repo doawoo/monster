@@ -39,7 +39,6 @@ defmodule Monster.Accounts do
   def get_user(id), do: Repo.get(User, id)
 
   def get_user_by_email(email) do
-    IO.inspect(email)
     Repo.get_by(User, email: email)
   end
 
@@ -75,5 +74,50 @@ defmodule Monster.Accounts do
   """
   def delete_user(%User{} = user) do
     Repo.delete(user)
+  end
+
+  @spec begin_email_change(integer, binary) :: :error | :ok
+  def begin_email_change(user_id, desired_email) when is_integer(user_id) and is_binary(desired_email) do
+    with %User{} = user <- get_user(user_id),
+    {:ok, _updated_user} <- Repo.update(Ecto.Changeset.change(user, %{pending_email: desired_email})) do
+      :ok
+    else
+      _ -> :error
+    end
+  end
+
+  @spec commit_email_change(integer, binary) :: :error | :ok
+  def commit_email_change(user_id, confirmed_email) when is_integer(user_id) and is_binary(confirmed_email) do
+    with %User{} = user <- Repo.get_by(User, pending_email: confirmed_email, id: user_id),
+    {:ok, _updated_user} <- Repo.update(Ecto.Changeset.change(user, %{email: user.pending_email, pending_email: nil})) do
+      :ok
+    else
+      _ -> :error
+    end
+  end
+
+  def change_user_password(user_id, current_password, new_password) when is_integer(user_id) and is_binary(current_password) and is_binary(new_password) do
+    hashed_password = Bcrypt.hash_pwd_salt(new_password)
+    now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+
+    with %User{} = user <- get_user(user_id),
+    true <- Bcrypt.verify_pass(current_password, user.password),
+    {:ok, _password} <- NotQwerty123.PasswordStrength.strong_password?(new_password),
+    {:ok, _updated_user} <- Repo.update(Ecto.Changeset.change(user, %{password: hashed_password, password_updated_at: now})) do
+      :ok
+    else
+      {:error, _} = err -> err
+      _ -> {:error, nil}
+    end
+  end
+
+  def ban_user(user_id) do
+    user = get_user!(user_id)
+    Repo.update(Ecto.Changeset.change(user, %{banned: true}))
+  end
+
+  def unban_user(user_id) do
+    user = get_user!(user_id)
+    Repo.update(Ecto.Changeset.change(user, %{banned: false}))
   end
 end
