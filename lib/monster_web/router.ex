@@ -37,6 +37,15 @@ defmodule MonsterWeb.Router do
 
       delete "/:id", CharacterController, :delete
     end
+
+    scope "/tag" do
+      pipe_through :auth_required
+
+      get "/:character_id", TagController, :get_tags
+      post "/:character_id", TagController, :add_tag
+      patch "/:character_id/:tag_id", TagController, :update_tag
+      delete "/:character_id/:tag_id", TagController, :delete_tag
+    end
   end
 
   scope "/", MonsterWeb do

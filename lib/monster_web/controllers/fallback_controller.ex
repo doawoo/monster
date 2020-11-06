@@ -21,4 +21,11 @@ defmodule MonsterWeb.FallbackController do
     |> put_view(MonsterWeb.ErrorView)
     |> render(:"404")
   end
+
+  def call(conn, _) do
+    conn
+    |> put_status(:not_found)
+    |> put_view(MonsterWeb.ErrorView)
+    |> render(:"404")
+  end
 end
