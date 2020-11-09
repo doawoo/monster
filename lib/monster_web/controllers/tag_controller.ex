@@ -36,11 +36,12 @@ defmodule MonsterWeb.TagController do
     }
 
     with %Character{} = _ <- Monster.Repo.get_by(Character, user_id: user_id, id: character_id),
-         {:ok, new_tag} <- Monster.Characters.create_character(params) do
+         {:ok, new_tag} <- Monster.Characters.create_tag(params) do
       conn |> put_status(:created) |> json(new_tag)
     else
       {:error, %Ecto.Changeset{errors: errors}} ->
         conn |> put_status(:bad_request) |> json(Errors.ecto_errors(errors))
+      _ ->  conn |> put_status(:not_found) |> json(%{})
     end
   end
 
@@ -56,7 +57,7 @@ defmodule MonsterWeb.TagController do
 
     with %Character{} = existing_character <-
            Monster.Repo.get_by(Character, user_id: user_id, id: character_id),
-         {:ok, existing_tag} <-
+         %Tag{} = existing_tag <-
            Monster.Repo.get_by(Tag, character_id: existing_character.id, id: tag_id),
          {:ok, updated_tag} <- Monster.Repo.update(Tag.changeset(existing_tag, new_tag_params)) do
       conn |> json(updated_tag)
@@ -78,7 +79,7 @@ defmodule MonsterWeb.TagController do
     character = Monster.Repo.get_by(Character, user_id: user_id, id: character_id)
 
     with %Character{} = existing_character <- character,
-         {:ok, existing_tag} <-
+         %Tag{} = existing_tag <-
            Monster.Repo.get_by(Tag, character_id: existing_character.id, id: tag_id),
          {:ok, _deleted} <- Monster.Repo.delete(existing_tag) do
       conn |> json(%{})

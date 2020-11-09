@@ -2,6 +2,8 @@ defmodule Monster.Characters.Tag do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @derive {Jason.Encoder, only: [:key, :value, :id]}
+
   schema "tag" do
     field :key, :string
     field :value, :string
