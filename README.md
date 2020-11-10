@@ -1,19 +1,12 @@
 # Monster
 
-To start your Phoenix server:
+### Required Env Variables
 
-  * Install dependencies with `mix deps.get`
-  * Create and migrate your database with `mix ecto.setup`
-  * Start Phoenix endpoint with `mix phx.server`
+`APP_HOSTNAME` - The hostname for the app
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+`APP_KEYCLOAK_REALM_URL` - URL to the Keycloak auth realm (returns the public_key etc.) 
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
+`APP_SECRET_KEY` - Decently secure secret string used to sign various tokens in the app
 
-## Learn more
+`APP_SIGN_SALT` - Decently secure secret string used to salt various secrets in the app
 
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix

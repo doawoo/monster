@@ -12,11 +12,14 @@ config :monster,
 
 # Configures the endpoint
 config :monster, MonsterWeb.Endpoint,
-  url: [host: "localhost"],
-  secret_key_base: "ThKMdTgUv3GSqMtzWKPefoa9DGjuJFD1ujX4rn2SxeKjrzkHo/oQvr/jL6YvEwgj",
+  url: [host: System.get_env("APP_HOSTNAME")],
+  secret_key_base: System.get_env("APP_KEY"),
   render_errors: [view: MonsterWeb.ErrorView, accepts: ~w(json), layout: false],
   pubsub_server: Monster.PubSub,
-  live_view: [signing_salt: "xW8/4RYZ"]
+  live_view: [signing_salt: System.get_env("APP_SIGN_SALT")]
+
+config :monster, MonsterWeb.RealmConfig,
+  realm_url: System.get_env("APP_KEYCLOAK_REALM_URL")
 
 # Configures Elixir's Logger
 config :logger, :console,

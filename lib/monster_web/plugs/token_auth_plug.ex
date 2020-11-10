@@ -1,9 +1,11 @@
 defmodule MonsterWeb.Plugs.TokenAuthPlug do
   import Plug.Conn
+  require Logger
 
   @token_salt "USER_AUTH_TOKEN"
 
   def init(_params) do
+    :ok
   end
 
   def call(%Plug.Conn{} = conn, _params) do

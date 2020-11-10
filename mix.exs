@@ -48,7 +48,8 @@ defmodule Monster.MixProject do
       {:jason, "~> 1.0"},
       {:hammer, "~> 6.0"},
       {:hammer_plug, "~> 2.1"},
-      {:plug_cowboy, "~> 2.0"}
+      {:plug_cowboy, "~> 2.0"},
+      {:tesla, "~> 1.3"},
     ]
   end
 

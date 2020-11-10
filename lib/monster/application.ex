@@ -14,9 +14,10 @@ defmodule Monster.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: Monster.PubSub},
       # Start the Endpoint (http/https)
-      MonsterWeb.Endpoint
+      MonsterWeb.Endpoint,
       # Start a worker by calling: Monster.Worker.start_link(arg)
       # {Monster.Worker, arg}
+      {MonsterWeb.RealmConfig, []}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
